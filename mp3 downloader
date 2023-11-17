@@ -1,0 +1,35 @@
+from pytube import YouTube
+from moviepy.editor import *
+import os
+
+def download_youtube_audios(links):
+    for link in links:
+        try:
+            # Download the YouTube video
+            yt = YouTube(link)
+            video = yt.streams.filter(only_audio=True).first()
+            video.download()
+
+            # Get the downloaded file path
+            video_path = f'{video.default_filename}'
+
+            # Convert the video file to audio
+            audio_path = f'audio_{yt.title}.mp3'
+
+            video_clip = AudioFileClip(video_path)
+            video_clip.write_audiofile(audio_path)
+
+            # Close the video file clip
+            video_clip.close()
+
+            # Delete the downloaded video file
+            os.remove(video_path)
+
+            print(f"Audio from '{yt.title}' downloaded and saved as '{audio_path}'")
+        except Exception as e:
+            print(f"An error occurred with link '{link}': {str(e)}")
+
+# Replace 'your_youtube_links' with a list of YouTube video links you want to download as audio
+youtube_links = ['Yt_link', 'Yt_link']
+
+download_youtube_audios(youtube_links)
